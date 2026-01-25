@@ -35,6 +35,7 @@ class MTASTSApp:
 
         self._load_config()
         self._validate_config()
+        self._build_policy_content()
         self._log_startup_config()
         self._configure_rate_limiter()
         self._register_routes()
@@ -133,6 +134,11 @@ class MTASTSApp:
             self.logger.critical("Configuration validation failed. Please fix the errors above.")
             sys.exit(1)
 
+    def _build_policy_content(self) -> None:
+        """Pre-build the MTA-STS policy content for faster responses."""
+        mx_lines = "\n".join(f"mx: {record}" for record in self.sts_mx_records)
+        self._policy_content = f"version: STSv1\nmode: {self.sts_mode}\nmax_age: {self.sts_max_age}\n{mx_lines}\n"
+
     def _log_startup_config(self) -> None:
         """Log the startup configuration."""
         self.logger.info("=" * 60)
@@ -174,9 +180,7 @@ class MTASTSApp:
         @self.rate_limiter.limit(self.rate_limit)
         def mta_sts_policy() -> Response:
             """Return the MTA-STS policy file in plain text format."""
-            mx_lines = "\n".join([f"mx: {record}" for record in self.sts_mx_records])
-            content = f"version: STSv1\nmode: {self.sts_mode}\nmax_age: {self.sts_max_age}\n{mx_lines}\n"
-            return Response(content, mimetype='text/plain')
+            return Response(self._policy_content, mimetype='text/plain')
 
         @self.flask_app.route('/health')
         def health() -> Response:
