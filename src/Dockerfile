@@ -79,6 +79,7 @@ RUN useradd -m app
 
 # Copy application files
 ADD requirements.txt /app/requirements.txt
+ADD gunicorn.conf.py /app/gunicorn.conf.py
 ADD app.py /app/app.py
 ADD templates/ /app/templates/
 ADD static/ /app/static/
