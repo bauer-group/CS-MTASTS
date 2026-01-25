@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MTA-STS Policy Configuration for {{ SERVICE_HOSTNAME }}">
+    <meta name="robots" content="noindex, nofollow">
+    <title>MTA-STS Configuration</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon-32x32.png') }}" sizes="32x32">
+    <link rel="icon" href="{{ url_for('static', filename='favicon-128x128.png') }}" sizes="128x128">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon-precomposed.png') }}">
+    <style>
+        :root {
+            --color-bg: #0a0a0f;
+            --color-surface: #12121a;
+            --color-surface-hover: #1a1a24;
+            --color-border: #1e1e2e;
+            --color-text: #e4e4e7;
+            --color-text-muted: #71717a;
+            --color-accent: #3b82f6;
+            --color-accent-glow: rgba(59, 130, 246, 0.15);
+            --color-success: #22c55e;
+            --color-success-bg: rgba(34, 197, 94, 0.1);
+            --color-warning: #f59e0b;
+            --color-warning-bg: rgba(245, 158, 11, 0.1);
+            --color-error: #ef4444;
+            --color-error-bg: rgba(239, 68, 68, 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 200ms ease;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 580px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-accent), #8b5cf6);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 32px var(--color-accent-glow);
+        }
+
+        .logo svg {
+            width: 36px;
+            height: 36px;
+            fill: white;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .card-icon.success {
+            background: var(--color-success-bg);
+        }
+
+        .card-icon.success svg {
+            fill: var(--color-success);
+        }
+
+        .card-icon.warning {
+            background: var(--color-warning-bg);
+        }
+
+        .card-icon.warning svg {
+            fill: var(--color-warning);
+        }
+
+        .card-icon.error {
+            background: var(--color-error-bg);
+        }
+
+        .card-icon.error svg {
+            fill: var(--color-error);
+        }
+
+        .card-icon.info {
+            background: var(--color-accent-glow);
+        }
+
+        .card-icon.info svg {
+            fill: var(--color-accent);
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Policy Grid */
+        .policy-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .policy-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--color-bg);
+            border-radius: var(--radius-sm);
+        }
+
+        .policy-label {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .policy-value {
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .policy-value.enforce {
+            color: var(--color-success);
+        }
+
+        .policy-value.testing {
+            color: var(--color-warning);
+        }
+
+        .policy-value.none {
+            color: var(--color-error);
+        }
+
+        /* MX Records */
+        .mx-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mx-item {
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            padding: 8px 12px;
+            background: var(--color-bg);
+            border-radius: var(--radius-sm);
+            color: var(--color-text-muted);
+        }
+
+        /* DNS Record */
+        .dns-record {
+            position: relative;
+        }
+
+        .dns-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--color-bg);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+        }
+
+        .dns-text {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            word-break: break-all;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--color-surface-hover);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            opacity: 0.7;
+        }
+
+        .copy-btn:hover {
+            opacity: 1;
+            background: var(--color-accent);
+        }
+
+        .copy-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--color-text);
+        }
+
+        .copy-btn.copied {
+            background: var(--color-success);
+        }
+
+        .copy-btn .icon-check {
+            display: none;
+        }
+
+        .copy-btn.copied .icon-copy {
+            display: none;
+        }
+
+        .copy-btn.copied .icon-check {
+            display: block;
+        }
+
+        /* Policy Link */
+        .policy-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            color: var(--color-accent);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all var(--transition);
+            margin-bottom: 16px;
+        }
+
+        .policy-link:hover {
+            background: var(--color-surface-hover);
+            border-color: var(--color-accent);
+        }
+
+        .policy-link svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .footer-hostname {
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive */
+        @media (max-width: 520px) {
+            body {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 1.25rem;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            .copy-btn {
+                opacity: 1;
+            }
+
+            .dns-text {
+                font-size: 0.6875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+            </div>
+            <h1>MTA-STS Configuration</h1>
+            <p class="subtitle">Mail Transfer Agent Strict Transport Security</p>
+        </div>
+
+        <!-- Policy Configuration Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon {{ 'success' if STS_MODE == 'enforce' else ('warning' if STS_MODE == 'testing' else 'error') }}">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="card-title">Policy Configuration</div>
+                    <div class="card-subtitle">Current MTA-STS settings</div>
+                </div>
+            </div>
+            <div class="policy-grid">
+                <div class="policy-item">
+                    <span class="policy-label">Mode</span>
+                    <span class="policy-value {{ STS_MODE }}">{{ STS_MODE }}</span>
+                </div>
+                <div class="policy-item">
+                    <span class="policy-label">Max Age</span>
+                    <span class="policy-value">{{ STS_MAX_AGE }} seconds</span>
+                </div>
+                <div class="policy-item" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                    <span class="policy-label">MX Records</span>
+                    <div class="mx-list">
+                        {% for mx in STS_MX_RECORDS %}
+                        <div class="mx-item">{{ mx }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mandatory DNS Record -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon info">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="card-title">Required DNS Record</div>
+                    <div class="card-subtitle">TXT record for _mta-sts subdomain</div>
+                </div>
+            </div>
+            <div class="dns-record">
+                <div class="dns-content">
+                    <span class="dns-text" id="dns-mandatory">_mta-sts TXT "v=STSv1; id=<span id="timestamp"></span>"</span>
+                    <button type="button" class="copy-btn" onclick="copyToClipboard(this, 'dns-mandatory')" aria-label="Copy DNS record">
+                        <svg class="icon-copy" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                        </svg>
+                        <svg class="icon-check" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Optional Reporting DNS Record -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon info">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="card-title">Optional Reporting Record</div>
+                    <div class="card-subtitle">TXT record for _smtp._tls subdomain</div>
+                </div>
+            </div>
+            <div class="dns-record">
+                <div class="dns-content">
+                    <span class="dns-text" id="dns-reporting">_smtp._tls TXT "v=TLSRPTv1; rua=mailto:mta-sts@<span id="domainname"></span>"</span>
+                    <button type="button" class="copy-btn" onclick="copyToClipboard(this, 'dns-reporting')" aria-label="Copy reporting record">
+                        <svg class="icon-copy" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                        </svg>
+                        <svg class="icon-check" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Policy File Link -->
+        <a href="/.well-known/mta-sts.txt" target="_blank" class="policy-link">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/>
+            </svg>
+            View Policy File
+        </a>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p class="footer-text">
+                <span class="footer-hostname">{{ SERVICE_HOSTNAME }}</span> &bull; v1.0.0
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            'use strict';
+
+            const CONFIG = Object.freeze({
+                hostname: '{{ SERVICE_HOSTNAME }}'
+            });
+
+            const generateTimestamp = () => {
+                const now = new Date();
+                const pad = (n) => String(n).padStart(2, '0');
+                return `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+            };
+
+            const extractDomain = (hostname) => {
+                return hostname.replace(/^mta-sts\./i, '');
+            };
+
+            const init = () => {
+                const timestampEl = document.getElementById('timestamp');
+                const domainnameEl = document.getElementById('domainname');
+
+                if (timestampEl) {
+                    timestampEl.textContent = generateTimestamp();
+                }
+
+                if (domainnameEl) {
+                    domainnameEl.textContent = extractDomain(CONFIG.hostname);
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+
+        async function copyToClipboard(button, elementId) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const text = element.textContent.trim();
+
+            try {
+                await navigator.clipboard.writeText(text);
+
+                button.classList.add('copied');
+
+                setTimeout(() => {
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (error) {
+                console.error('[Clipboard] Copy failed:', error);
+            }
+        }
+    </script>
+</body>
+</html>

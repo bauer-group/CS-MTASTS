@@ -1,0 +1,98 @@
+# =============================================================================
+# MTA-STS Server - Traefik Deployment with TLS
+# =============================================================================
+#
+# Usage: docker compose -f docker-compose.traefik.yml --env-file .env up -d
+#
+# Requirements:
+#   - External Traefik proxy network (PROXY_NETWORK)
+#   - Traefik with Let's Encrypt certificate resolver named "letsencrypt"
+#
+# Features:
+#   - Automatic HTTPS with Let's Encrypt
+#   - HTTP to HTTPS redirect
+#   - Integration with Traefik reverse proxy
+#   - Health check monitoring
+#
+# Access:
+#   - Web UI: https://${SERVICE_HOSTNAME}
+#   - Policy: https://${SERVICE_HOSTNAME}/.well-known/mta-sts.txt
+#
+# =============================================================================
+
+services:
+  ### MTA-STS Server ###
+  # Serves MTA-STS policy files according to RFC 8461
+  mtasts-server:
+    # Option 1: Use pre-built image (recommended)
+    image: ghcr.io/bauer-group/cs-mtasts/mtasts:latest
+    # Option 2: Build from source
+    # build: ./src
+    restart: unless-stopped
+    container_name: ${STACK_NAME}_SERVER
+    hostname: ${SERVICE_HOSTNAME}
+
+    # Environment Configuration
+    environment:
+      # System
+      - TZ=${TIME_ZONE:-Etc/UTC}
+
+      # Service
+      - SERVICE_HOSTNAME=${SERVICE_HOSTNAME}
+      - GLOBAL_RATE_LIMIT=${GLOBAL_RATE_LIMIT:-600/minute}
+
+      # MTA-STS Policy
+      - STS_MODE=${STS_MODE:-enforce}
+      - STS_MAX_AGE=${STS_MAX_AGE:-86400}
+      - STS_MX_RECORDS=${STS_MX_RECORDS}
+
+    # Traefik Network
+    networks:
+      - proxy
+
+    # Traefik Labels
+    labels:
+      # Enable Traefik
+      - "traefik.enable=true"
+      - "traefik.docker.network=${PROXY_NETWORK}"
+
+      # HTTP Router (Redirect to HTTPS)
+      - "traefik.http.routers.${STACK_NAME}-web.rule=Host(`${SERVICE_HOSTNAME}`)"
+      - "traefik.http.routers.${STACK_NAME}-web.entrypoints=web"
+      - "traefik.http.routers.${STACK_NAME}-web.middlewares=${STACK_NAME}-https-redirect"
+
+      # HTTPS Router
+      - "traefik.http.routers.${STACK_NAME}-websecure.rule=Host(`${SERVICE_HOSTNAME}`)"
+      - "traefik.http.routers.${STACK_NAME}-websecure.entrypoints=websecure"
+      - "traefik.http.routers.${STACK_NAME}-websecure.tls=true"
+      - "traefik.http.routers.${STACK_NAME}-websecure.tls.certresolver=letsencrypt"
+
+      # Middleware: HTTPS Redirect
+      - "traefik.http.middlewares.${STACK_NAME}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.${STACK_NAME}-https-redirect.redirectscheme.permanent=true"
+
+      # Service Configuration
+      - "traefik.http.services.${STACK_NAME}-service.loadbalancer.server.port=8080"
+
+    # Health Check
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    # Logging Configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+### Networks ###
+networks:
+  # External Traefik proxy network
+  # Must be created before deployment: docker network create ${PROXY_NETWORK}
+  proxy:
+    name: ${PROXY_NETWORK}
+    external: true

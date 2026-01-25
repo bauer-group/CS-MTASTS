@@ -1,0 +1,67 @@
+# =============================================================================
+# MTA-STS Server - Local Deployment
+# =============================================================================
+#
+# Usage: docker compose -f docker-compose.local.yml --env-file .env up -d
+#
+# Features:
+#   - Pre-built image from GitHub Container Registry
+#   - Direct port exposure via EXPOSED_PORT
+#   - For use behind external reverse proxy or local testing
+#   - Health check monitoring
+#   - JSON logging with rotation
+#
+# Access:
+#   - Web UI: http://${EXPOSED_PORT}
+#   - Policy: http://${EXPOSED_PORT}/.well-known/mta-sts.txt
+#   - Health: http://${EXPOSED_PORT}/health
+#
+# Example EXPOSED_PORT values:
+#   - "8080"                   => all interfaces, port 8080
+#   - "192.168.1.100:7088"     => specific IP:port
+#   - "127.0.0.1:8080"         => localhost only
+#
+# =============================================================================
+
+services:
+  ### MTA-STS Server ###
+  # Serves MTA-STS policy files according to RFC 8461
+  mtasts-server:
+    image: ghcr.io/bauer-group/cs-mtasts/mtasts:latest
+    restart: unless-stopped
+    container_name: ${STACK_NAME}_SERVER
+    hostname: ${SERVICE_HOSTNAME}
+
+    # Port Mapping
+    # Maps EXPOSED_PORT to internal port 8080
+    ports:
+      - "${EXPOSED_PORT}:8080"
+
+    # Environment Configuration
+    environment:
+      # System
+      - TZ=${TIME_ZONE:-Etc/UTC}
+
+      # Service
+      - SERVICE_HOSTNAME=${SERVICE_HOSTNAME}
+      - GLOBAL_RATE_LIMIT=${GLOBAL_RATE_LIMIT:-600/minute}
+
+      # MTA-STS Policy
+      - STS_MODE=${STS_MODE:-enforce}
+      - STS_MAX_AGE=${STS_MAX_AGE:-86400}
+      - STS_MX_RECORDS=${STS_MX_RECORDS}
+
+    # Health Check
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    # Logging Configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

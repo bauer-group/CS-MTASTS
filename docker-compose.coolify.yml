@@ -1,0 +1,59 @@
+# =============================================================================
+# MTA-STS Server - Coolify/Standalone Deployment
+# =============================================================================
+#
+# Usage: docker compose -f docker-compose.coolify.yml --env-file .env up -d
+#
+# Features:
+#   - Standalone deployment without reverse proxy
+#   - Managed by Coolify or direct docker compose
+#   - Health check monitoring
+#   - JSON logging with rotation
+#
+# Access:
+#   - Web UI: http://localhost:8080
+#   - Policy: http://localhost:8080/.well-known/mta-sts.txt
+#   - Health: http://localhost:8080/health
+#
+# =============================================================================
+
+services:
+  ### MTA-STS Server ###
+  # Serves MTA-STS policy files according to RFC 8461
+  mtasts-server:
+    # Option 1: Use pre-built image (recommended)
+    image: ghcr.io/bauer-group/cs-mtasts/mtasts:latest
+    # Option 2: Build from source
+    # build: ./src
+    restart: unless-stopped
+    container_name: ${STACK_NAME}_SERVER
+    hostname: ${SERVICE_HOSTNAME}
+
+    # Environment Configuration
+    environment:
+      # System
+      - TZ=${TIME_ZONE:-Etc/UTC}
+
+      # Service
+      - SERVICE_HOSTNAME=${SERVICE_HOSTNAME}
+      - GLOBAL_RATE_LIMIT=${GLOBAL_RATE_LIMIT:-600/minute}
+
+      # MTA-STS Policy
+      - STS_MODE=${STS_MODE:-enforce}
+      - STS_MAX_AGE=${STS_MAX_AGE:-86400}
+      - STS_MX_RECORDS=${STS_MX_RECORDS}
+
+    # Health Check
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+    # Logging Configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
