@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(cat:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "Bash(Remove-Item -Path \"c:\\\\Projects\\\\Container-Solution\\\\MTA-STS-Server\\\\.dockerignore\" -Force)"
+    ]
+  }
+}
