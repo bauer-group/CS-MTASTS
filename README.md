@@ -1,7 +1,7 @@
 # MTA-STS Server
 
 [![Release](https://img.shields.io/github/v/release/bauer-group/CS-MTASTS?style=flat-square)](https://github.com/bauer-group/CS-MTASTS/releases)
-[![Docker](https://img.shields.io/badge/docker-ghcr.io-blue?style=flat-square)](https://github.com/bauer-group/CS-MTASTS/pkgs)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io-blue?style=flat-square)](https://github.com/orgs/bauer-group/packages/container/package/cs-mtasts%2Fmtasts)
 [![License](https://img.shields.io/github/license/bauer-group/CS-MTASTS?style=flat-square)](LICENSE)
 
 A lightweight Mail Transfer Agent Strict Transport Security (MTA-STS) policy server implementing [RFC 8461](https://datatracker.ietf.org/doc/html/rfc8461).
