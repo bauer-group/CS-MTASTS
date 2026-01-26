@@ -28,6 +28,7 @@ services:
     image: ghcr.io/bauer-group/cs-mtasts/mtasts:latest
     # Option 2: Build from source
     # build: ./src
+    
     restart: unless-stopped
     container_name: ${STACK_NAME}_SERVER
     hostname: ${SERVICE_HOSTNAME}

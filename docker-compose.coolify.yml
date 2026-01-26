@@ -22,9 +22,10 @@ services:
   # Serves MTA-STS policy files according to RFC 8461
   mtasts-server:
     # Option 1: Use pre-built image (recommended)
-    image: ghcr.io/bauer-group/cs-mtasts/mtasts:latest
+    # image: ghcr.io/bauer-group/cs-mtasts/mtasts:latest    
     # Option 2: Build from source
-    # build: ./src
+    build: ./src
+
     restart: unless-stopped
     container_name: ${STACK_NAME}_SERVER
     hostname: ${SERVICE_HOSTNAME}

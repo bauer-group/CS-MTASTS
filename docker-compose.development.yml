@@ -27,6 +27,7 @@ services:
   # Serves MTA-STS policy files according to RFC 8461
   mtasts-server:
     build: ./src
+    
     restart: unless-stopped
     container_name: ${STACK_NAME}_SERVER
     hostname: ${SERVICE_HOSTNAME}
