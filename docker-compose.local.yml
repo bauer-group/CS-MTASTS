@@ -48,6 +48,7 @@ services:
 
       # Service
       - SERVICE_HOSTNAME=${SERVICE_HOSTNAME}
+      - DYNAMIC_HOSTNAME=${DYNAMIC_HOSTNAME:-false}
       - GLOBAL_RATE_LIMIT=${GLOBAL_RATE_LIMIT:-600/minute}
 
       # MTA-STS Policy
