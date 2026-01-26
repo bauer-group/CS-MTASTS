@@ -1,3 +1,9 @@
+## [0.3.0](https://github.com/bauer-group/CS-MTASTS/compare/v0.2.0...v0.3.0) (2026-01-26)
+
+### 🚀 Features
+
+* add dynamic hostname support and update configuration requirements ([3bb34c0](https://github.com/bauer-group/CS-MTASTS/commit/3bb34c0dece02762506e7a0b5422a0069e785868))
+
 ## [0.2.0](https://github.com/bauer-group/CS-MTASTS/compare/v0.1.0...v0.2.0) (2026-01-25)
 
 ### 🚀 Features
