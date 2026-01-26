@@ -47,6 +47,7 @@ ENV FLASK_APP=app
 
 # Service Configuration
 ENV SERVICE_HOSTNAME=mta-sts.example.com
+ENV DYNAMIC_HOSTNAME=false
 ENV GLOBAL_RATE_LIMIT=600/minute
 ENV SERVER_PORT=8080
 

@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, request
 from flask_limiter import Limiter
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -53,6 +53,7 @@ class MTASTSApp:
     def _load_config(self) -> None:
         """Load configuration from environment variables."""
         self.service_hostname: str = os.environ.get('SERVICE_HOSTNAME', '')
+        self.dynamic_hostname: bool = os.environ.get('DYNAMIC_HOSTNAME', 'false').lower() == 'true'
         self.rate_limit: str = os.environ.get('GLOBAL_RATE_LIMIT', '600/minute')
         self.server_port: int = self._parse_int('SERVER_PORT', 8080)
 
@@ -85,12 +86,13 @@ class MTASTSApp:
         errors: list[str] = []
         warnings: list[str] = []
 
-        # SERVICE_HOSTNAME - Required
+        # SERVICE_HOSTNAME - Required unless DYNAMIC_HOSTNAME is enabled
         if not self.service_hostname:
-            errors.append("SERVICE_HOSTNAME is required but not set")
+            if not self.dynamic_hostname:
+                errors.append("SERVICE_HOSTNAME is required but not set (or enable DYNAMIC_HOSTNAME)")
         elif not HOSTNAME_PATTERN.match(self.service_hostname):
             errors.append(f"SERVICE_HOSTNAME='{self.service_hostname}' is not a valid hostname")
-        elif not self.service_hostname.startswith('mta-sts.'):
+        elif not self.dynamic_hostname and not self.service_hostname.startswith('mta-sts.'):
             warnings.append(f"SERVICE_HOSTNAME='{self.service_hostname}' should start with 'mta-sts.' per RFC 8461")
 
         # STS_MODE - Must be valid
@@ -139,12 +141,19 @@ class MTASTSApp:
         mx_lines = "\n".join(f"mx: {record}" for record in self.sts_mx_records)
         self._policy_content = f"version: STSv1\nmode: {self.sts_mode}\nmax_age: {self.sts_max_age}\n{mx_lines}\n"
 
+    def _get_current_hostname(self) -> str:
+        """Get the current hostname from request header or config."""
+        if self.dynamic_hostname:
+            return request.host.split(':')[0]  # Remove port if present
+        return self.service_hostname
+
     def _log_startup_config(self) -> None:
         """Log the startup configuration."""
         self.logger.info("=" * 60)
         self.logger.info("MTA-STS Server starting")
         self.logger.info("=" * 60)
         self.logger.info(f"SERVICE_HOSTNAME: {self.service_hostname}")
+        self.logger.info(f"DYNAMIC_HOSTNAME: {self.dynamic_hostname}")
         self.logger.info(f"STS_MODE: {self.sts_mode}")
         self.logger.info(f"STS_MAX_AGE: {self.sts_max_age} seconds")
         self.logger.info(f"STS_MX_RECORDS: {', '.join(self.sts_mx_records)}")
@@ -170,7 +179,7 @@ class MTASTSApp:
             """Render the MTA-STS information page."""
             return render_template(
                 'index.html',
-                SERVICE_HOSTNAME=self.service_hostname,
+                SERVICE_HOSTNAME=self._get_current_hostname(),
                 STS_MODE=self.sts_mode,
                 STS_MAX_AGE=self.sts_max_age,
                 STS_MX_RECORDS=self.sts_mx_records,
