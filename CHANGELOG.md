@@ -1,3 +1,9 @@
+## [0.3.1](https://github.com/bauer-group/CS-MTASTS/compare/v0.3.0...v0.3.1) (2026-01-26)
+
+### 🐛 Bug Fixes
+
+* add dynamic hostname support to all docker-compose configurations ([aef7636](https://github.com/bauer-group/CS-MTASTS/commit/aef7636e36cb74d13c2ce7f87d0867b12c2be259))
+
 ## [0.3.0](https://github.com/bauer-group/CS-MTASTS/compare/v0.2.0...v0.3.0) (2026-01-26)
 
 ### 🚀 Features
