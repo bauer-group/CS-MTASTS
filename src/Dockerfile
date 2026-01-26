@@ -26,7 +26,7 @@ LABEL maintainer="Karl Bauer <karl.bauer@bauer-group.com>"
 # Opencontainers Metadata
 LABEL org.opencontainers.image.title="MTA-STS Server"
 LABEL org.opencontainers.image.description="Mail Transfer Agent Strict Transport Security Policy Server (RFC 8461)"
-LABEL org.opencontainers.image.version="0.2.0"
+LABEL org.opencontainers.image.version="0.3.0"
 LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.vendor="BAUER GROUP"
 LABEL org.opencontainers.image.authors="Karl Bauer <karl.bauer@bauer-group.com>"
