@@ -74,7 +74,7 @@ jobs:
     uses: bauer-group/automation-templates/.github/workflows/docker-build.yml@main
     with:
       deploy-environment: 'production'
-      publish-to: 'both'
+      publish-to: 'ghcr'
       ghcr-image-name: 'bauer-group/CS-MTASTS/mtasts'
       docker-image-name: 'bauergroup/mtasts'
 
