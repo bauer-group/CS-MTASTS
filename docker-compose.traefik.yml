@@ -65,7 +65,7 @@ services:
 
       # HTTPS Router
       - "traefik.http.routers.${STACK_NAME}-websecure.rule=Host(`${SERVICE_HOSTNAME}`)"
-      - "traefik.http.routers.${STACK_NAME}-websecure.entrypoints=websecure"
+      - "traefik.http.routers.${STACK_NAME}-websecure.entrypoints=web-secure"
       - "traefik.http.routers.${STACK_NAME}-websecure.tls=true"
       - "traefik.http.routers.${STACK_NAME}-websecure.tls.certresolver=letsencrypt"
 
