@@ -1,32 +1,44 @@
 # =============================================================================
-# Docker Build Ignore - MTA-STS Server
+# Docker build context excludes - MTA-STS Server
 # =============================================================================
 # Build context: ./src
+#
+# Docker uses Go's filepath.Match plus `**/` for recursion. Patterns WITHOUT
+# `**/` only match at the context root — so to ignore `__pycache__/` at any
+# depth we MUST write `**/__pycache__` (unlike .gitignore, which matches at
+# every depth automatically).
+#
+# NOTE: tests/, pytest.ini and requirements-test.txt are intentionally NOT
+# excluded — the Dockerfile "test" stage needs them as a build gate.
 # =============================================================================
 
-# Python Cache
-__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache/
+# Python bytecode + caches (recursive — `**/` is required)
+**/__pycache__
+**/*.py[cod]
+**/*$py.class
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.coverage
+**/.coverage.*
+**/htmlcov
+**/.tox
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Virtualenvs (in case anyone runs `python -m venv` inside the source tree)
+**/.venv
+**/venv
+**/env
 
-# Testing
-.coverage
-htmlcov/
-.tox/
+# Editor / OS noise
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+**/*~
+**/.DS_Store
+**/Thumbs.db
 
-# Virtual Environments
-venv/
-.venv/
-env/
-
-# Local Development
-*.log
-*.tmp
+# Local-only files that have no business in the build
+**/*.log
+**/*.tmp
+**/*.bak

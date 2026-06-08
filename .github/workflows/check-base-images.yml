@@ -1,0 +1,34 @@
+name: "🔄 Check Base Image Updates"
+
+# =============================================================================
+# Base Image Digest Monitor
+# =============================================================================
+# Dependabot only reacts to TAG changes (e.g. python:3.14 → 3.15). The vast
+# majority of security patches ship as a new DIGEST behind the SAME tag
+# (python:3.14-alpine → new sha256). This scheduled job watches those digests
+# and, when one moves, force-triggers docker-release.yml so the application
+# image is rebuilt and re-released on top of the patched base.
+# =============================================================================
+
+on:
+  schedule:
+    # Daily at 10:00 UTC (11:00 CET / 12:00 CEST)
+    - cron: '0 10 * * *'
+
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'only check for updates without creating commits or releases'
+        type: boolean
+        default: false
+
+jobs:
+  check-updates:
+    name: Check for Base Image Updates
+    uses: bauer-group/automation-templates/.github/workflows/modules-docker-base-image-monitor.yml@main
+    with:
+      config-file: '.github/config/docker-base-image-monitor/base-images.json'
+      dry-run: ${{ inputs.dry-run || false }}
+      target-workflow: 'docker-release.yml'
+      target-workflow-inputs: '{"force-release": "true"}'
+    secrets: inherit

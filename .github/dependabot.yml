@@ -24,6 +24,26 @@ updates:
       include: "scope"
     open-pull-requests-limit: 5
 
+  # Python application dependencies (Flask, gunicorn, Flask-Limiter)
+  # Not auto-merged — docker-maintenance.yml only auto-merges Dockerfile updates,
+  # so these PRs are reviewed manually. The PR build (incl. the pytest gate)
+  # validates each one before it can be merged.
+  - package-ecosystem: "pip"
+    directory: "/src"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "06:30"
+      timezone: "Etc/UTC"
+    labels:
+      - "dependencies"
+      - "python"
+      - "dependabot"
+    commit-message:
+      prefix: "fix(deps)"
+      include: "scope"
+    open-pull-requests-limit: 5
+
   # GitHub Actions updates
   - package-ecosystem: "github-actions"
     directory: "/"
