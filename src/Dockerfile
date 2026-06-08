@@ -73,7 +73,7 @@ LABEL org.opencontainers.image.source="https://github.com/bauer-group/CS-MTASTS"
 LABEL org.opencontainers.image.url="https://github.com/bauer-group/CS-MTASTS"
 LABEL org.opencontainers.image.documentation="https://github.com/bauer-group/CS-MTASTS#readme"
 LABEL org.opencontainers.image.base.name="docker.io/library/python:3.14-alpine"
-LABEL org.opencontainers.image.version="0.3.2"
+LABEL org.opencontainers.image.version="0.4.0"
 
 LABEL com.bauer-group.image.component="application"
 LABEL com.bauer-group.image.stack="mta-sts"
