@@ -78,9 +78,9 @@ LABEL org.opencontainers.image.version="0.4.0"
 LABEL com.bauer-group.image.component="application"
 LABEL com.bauer-group.image.stack="mta-sts"
 
-# Runtime dependencies only: tini (clean PID 1 signal handling), tzdata, CA certs.
-# The healthcheck uses busybox wget (already present in alpine) — no curl needed.
-RUN apk add --no-cache tini tzdata ca-certificates \
+# Runtime dependencies only: tini (clean PID 1 signal handling), tzdata, CA certs,
+# and curl for the container healthcheck.
+RUN apk add --no-cache tini tzdata ca-certificates curl \
     && rm -rf /var/cache/apk/* \
     && addgroup -g 1001 -S app \
     && adduser -S -D -u 1001 -G app -h /app app
@@ -119,10 +119,10 @@ EXPOSE 8080/tcp
 USER app
 
 # Health check — verifies the application is responding on the configured port.
-# Use 127.0.0.1 (not localhost): busybox wget does not fall back from ::1 to
-# IPv4, and gunicorn binds IPv4 0.0.0.0 only.
+# Use 127.0.0.1 (not localhost) so the probe targets gunicorn's IPv4 bind
+# (0.0.0.0) directly and never stalls on an IPv6 ::1 attempt first.
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget -q -O /dev/null "http://127.0.0.1:${SERVER_PORT}/health" || exit 1
+    CMD curl -sf "http://127.0.0.1:${SERVER_PORT}/health" || exit 1
 
 # tini as PID 1 → forwards SIGTERM/SIGINT cleanly to the gunicorn master
 ENTRYPOINT ["/sbin/tini", "--", "gunicorn", "-c", "gunicorn.conf.py", "app:app"]
