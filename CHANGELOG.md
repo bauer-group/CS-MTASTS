@@ -1,3 +1,9 @@
+## [0.3.2](https://github.com/bauer-group/CS-MTASTS/compare/v0.3.1...v0.3.2) (2026-05-04)
+
+### 🐛 Bug Fixes
+
+* **traefik:** renamed websecure entrypoint to web-secure ([04a5842](https://github.com/bauer-group/CS-MTASTS/commit/04a58421eb2a157dbc62ccbeb9b2d5abe3802952))
+
 ## [0.3.1](https://github.com/bauer-group/CS-MTASTS/compare/v0.3.0...v0.3.1) (2026-01-26)
 
 ### 🐛 Bug Fixes
