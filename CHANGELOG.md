@@ -1,3 +1,9 @@
+## [0.4.1](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.0...v0.4.1) (2026-06-08)
+
+### 🐛 Bug Fixes
+
+* **docker:** restored curl healthcheck on the alpine image ([8e9a836](https://github.com/bauer-group/CS-MTASTS/commit/8e9a8364b01d2ed11dbe3d5ee6354ebbd9b8839b))
+
 ## [0.4.0](https://github.com/bauer-group/CS-MTASTS/compare/v0.3.2...v0.4.0) (2026-06-08)
 
 ### 🚀 Features
