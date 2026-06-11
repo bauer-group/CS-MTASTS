@@ -1,3 +1,5 @@
+## [0.4.3](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.2...v0.4.3) (2026-06-11)
+
 ## [0.4.2](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.1...v0.4.2) (2026-06-08)
 
 ## [0.4.1](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.0...v0.4.1) (2026-06-08)
