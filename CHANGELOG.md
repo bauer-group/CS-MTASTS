@@ -1,3 +1,9 @@
+## [0.4.5](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.4...v0.4.5) (2026-08-06)
+
+### 🐛 Bug Fixes
+
+* **ci:** added the missing permissions block ([67297f8](https://github.com/bauer-group/CS-MTASTS/commit/67297f8e89271c195509a4f2db6b6e5fac7de1a2))
+
 ## [0.4.4](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.3...v0.4.4) (2026-06-16)
 
 ## [0.4.3](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.2...v0.4.3) (2026-06-11)
