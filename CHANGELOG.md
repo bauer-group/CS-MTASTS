@@ -1,3 +1,11 @@
+# Changelog
+
+All notable changes to this project are documented here. This file is maintained
+automatically by [semantic-release](https://github.com/semantic-release/semantic-release)
+on every release to `main`.
+
+## [0.4.6](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.5...v0.4.6) (2026-09-01)
+
 ## [0.4.5](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.4...v0.4.5) (2026-08-06)
 
 ### 🐛 Bug Fixes
