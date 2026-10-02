@@ -4,6 +4,14 @@ All notable changes to this project are documented here. This file is maintained
 automatically by [semantic-release](https://github.com/semantic-release/semantic-release)
 on every release to `main`.
 
+## [0.4.8](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.7...v0.4.8) (2026-10-02)
+
+### 🔧 Maintenance
+
+* **ci:** removed issue AI summary workflow ([e619a8e](https://github.com/bauer-group/CS-MTASTS/commit/e619a8e4b8d9a3092dcc0a42296cb6a3611b4270)), references [bauer-group/automation-templates#105](https://github.com/bauer-group/automation-templates/issues/105)
+* **deps:** update base image python-alpine ([031bbd8](https://github.com/bauer-group/CS-MTASTS/commit/031bbd824ff09d3bb30a97790214063daf88b28c))
+* update Dockerfile version to 0.4.7 ([f4006e7](https://github.com/bauer-group/CS-MTASTS/commit/f4006e703cc11dcf25f6244c614bdcbca2a11c78))
+
 ## [0.4.7](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.6...v0.4.7) (2026-09-18)
 
 ### 🔧 Maintenance
