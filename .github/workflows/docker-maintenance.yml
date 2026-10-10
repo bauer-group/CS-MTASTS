@@ -1,15 +1,20 @@
 # =============================================================================
 # Docker Maintenance - Auto-merge Dependabot PRs
 # =============================================================================
-# Automatically merges Dependabot PRs for Docker base image updates.
-# After merge, the docker-release.yml workflow is triggered which:
-# 1. Creates a semantic release
-# 2. Builds and pushes the new Docker image
+# Decides on every Dependabot PR, whatever its ecosystem (docker, pip, ...):
+# a patch update is merged once the PR run of docker-release.yml passed on
+# its head commit - that run builds the image from src/, which installs
+# src/requirements*.txt and runs pytest as a build gate. Everything else
+# (minor/major, untested, GitHub Actions or other .github/ changes) is left
+# open with an annotation and a job summary.
+# The release (semantic release, image build and push) runs with the next
+# push to main that is not the merge itself - a GITHUB_TOKEN merge starts
+# no push workflow.
 #
 # Flow:
 # ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
 # │  Dependabot     │────▶│  PR Created     │────▶│  Docker Build   │
-# │  Finds Update   │     │  (base image)   │     │  Validates      │
+# │  Finds Update   │     │ (any ecosystem) │     │  Validates      │
 # └─────────────────┘     └─────────────────┘     └────────┬────────┘
 #                                                          │
 #                                                          ▼
@@ -22,10 +27,11 @@
 name: 🔧 Docker Maintenance
 
 on:
+  # No paths filter: every Dependabot PR reaches the module and gets an
+  # explicit decision, instead of silently staying open. Whether it merges is
+  # up to required-workflows below.
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - 'src/Dockerfile'
 
 permissions:
   contents: write
@@ -39,6 +45,7 @@ jobs:
       merge-method: 'squash'
       auto-approve: true
       # Merge only after this PR CI has passed on the PR head commit - it
-      # builds the image.
+      # builds the image. Its pull_request paths (src/**) cover the docker
+      # and pip manifests in /src, so both ecosystems are tested by it.
       required-workflows: '.github/workflows/docker-release.yml'
     secrets: inherit

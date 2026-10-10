@@ -1,8 +1,9 @@
 # =============================================================================
 # Dependabot Configuration
 # =============================================================================
-# Monitors Docker base images for updates
+# Monitors the Docker base image, the Python requirements and GitHub Actions
 # Combined with docker-maintenance.yml workflow for auto-merge and release
+# (GitHub Actions updates are always merged by hand)
 # =============================================================================
 
 version: 2
@@ -24,10 +25,11 @@ updates:
       include: "scope"
     open-pull-requests-limit: 5
 
-  # Python application dependencies (Flask, gunicorn, Flask-Limiter)
-  # Not auto-merged — docker-maintenance.yml only auto-merges Dockerfile updates,
-  # so these PRs are reviewed manually. The PR build (incl. the pytest gate)
-  # validates each one before it can be merged.
+  # Python application dependencies (Flask, gunicorn, Flask-Limiter) and the
+  # test requirements (pytest, pytest-mock)
+  # Patch updates are auto-merged by docker-maintenance.yml once the PR build
+  # of docker-release.yml (it installs both requirements files and runs the
+  # pytest gate) has passed. Minor and major updates stay open for review.
   - package-ecosystem: "pip"
     directory: "/src"
     schedule:
