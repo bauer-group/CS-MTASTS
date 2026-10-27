@@ -4,6 +4,13 @@ All notable changes to this project are documented here. This file is maintained
 automatically by [semantic-release](https://github.com/semantic-release/semantic-release)
 on every release to `main`.
 
+## [0.4.10](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.9...v0.4.10) (2026-10-27)
+
+### 🔧 Maintenance
+
+* **deps:** update base image python-alpine [skip ci] ([29cff79](https://github.com/bauer-group/CS-MTASTS/commit/29cff79e68b78ed4483a78d84d691b728277d572))
+* update Dockerfile version to 0.4.9 ([a3835c3](https://github.com/bauer-group/CS-MTASTS/commit/a3835c344c596d052701996db4358f79628f1dd2))
+
 ## [0.4.9](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.8...v0.4.9) (2026-10-22)
 
 ### 🔧 Maintenance
