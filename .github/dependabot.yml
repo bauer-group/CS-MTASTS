@@ -14,7 +14,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
-      time: "06:30"
+      time: "14:00"
       timezone: "Etc/UTC"
     labels:
       - "dependencies"
@@ -35,7 +35,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
-      time: "06:30"
+      time: "14:00"
       timezone: "Etc/UTC"
     labels:
       - "dependencies"
@@ -52,7 +52,7 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
-      time: "06:30"
+      time: "14:00"
       timezone: "Etc/UTC"
     labels:
       - "dependencies"
