@@ -2,11 +2,11 @@
 # Docker Maintenance - Auto-merge Dependabot PRs
 # =============================================================================
 # Decides on every Dependabot PR, whatever its ecosystem (docker, pip, ...):
-# a patch update is merged once the PR run of docker-release.yml passed on
-# its head commit - that run builds the image from src/, which installs
-# src/requirements*.txt and runs pytest as a build gate. Everything else
-# (minor/major, untested, GitHub Actions or other .github/ changes) is left
-# open with an annotation and a job summary.
+# a patch or minor update is merged once the PR run of docker-release.yml
+# passed on its head commit - that run builds the image from src/, which
+# installs src/requirements*.txt and runs pytest as a build gate. Everything
+# else (major, including a 0.x minor; untested; GitHub Actions or other
+# .github/ changes) is left open with an annotation and a job summary.
 # The release (semantic release, image build and push) runs with the next
 # push to main that is not the merge itself - a GITHUB_TOKEN merge starts
 # no push workflow.
