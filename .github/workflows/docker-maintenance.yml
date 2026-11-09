@@ -7,9 +7,13 @@
 # installs src/requirements*.txt and runs pytest as a build gate. Everything
 # else (major, including a 0.x minor; untested; GitHub Actions or other
 # .github/ changes) is left open with an annotation and a job summary.
-# The release (semantic release, image build and push) runs with the next
-# push to main that is not the merge itself - a GITHUB_TOKEN merge starts
-# no push workflow.
+# A merge made with the GITHUB_TOKEN starts no push workflow, so after the
+# merge this workflow dispatches docker-release.yml on main and waits for
+# it (release-workflow). That run builds the merged commit again and only
+# then:
+# 1. Creates a semantic release
+# 2. Builds and pushes the new Docker image
+# A release run that does not succeed turns this job red.
 #
 # Flow:
 # ┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
@@ -34,8 +38,11 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: write       # merge
+  pull-requests: write  # approve, read the PR
+  checks: read          # check runs and suites of the PR head commit
+  statuses: read        # commit statuses of the PR head commit
+  actions: write        # dispatch the release; read workflow runs
 
 jobs:
   maintenance:
@@ -48,4 +55,8 @@ jobs:
       # builds the image. Its pull_request paths (src/**) cover the docker
       # and pip manifests in /src, so both ecosystems are tested by it.
       required-workflows: '.github/workflows/docker-release.yml'
+      # After a merge - and only then - dispatch the release on main and
+      # wait for it: it rebuilds the merged commit before it releases it,
+      # and a failed release run fails this job.
+      release-workflow: '.github/workflows/docker-release.yml'
     secrets: inherit

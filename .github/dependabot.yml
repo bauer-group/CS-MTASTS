@@ -4,6 +4,10 @@
 # Monitors the Docker base image, the Python requirements and GitHub Actions
 # Combined with docker-maintenance.yml workflow for auto-merge and release
 # (GitHub Actions updates are always merged by hand)
+#
+# The commit prefix decides whether a merged update is released: fix(...)
+# cuts a PATCH release and rebuilds the image, chore(...) releases nothing.
+# Everything that ends up in the shipped image uses fix(...).
 # =============================================================================
 
 version: 2
@@ -20,9 +24,10 @@ updates:
       - "dependencies"
       - "docker"
       - "dependabot"
+    # No include: "scope" - the prefix already has one, and Dependabot would
+    # append "(deps)" to it (fix(docker)(deps): ...).
     commit-message:
       prefix: "fix(docker)"
-      include: "scope"
     open-pull-requests-limit: 5
 
   # Python application dependencies (Flask, gunicorn, Flask-Limiter) and the
@@ -42,9 +47,10 @@ updates:
       - "dependencies"
       - "python"
       - "dependabot"
+    # No include: "scope" - the prefix already has one (fix(deps)(deps): ...).
     commit-message:
       prefix: "fix(deps)"
-      include: "scope"
+      prefix-development: "chore(deps-dev)"
     open-pull-requests-limit: 5
 
   # GitHub Actions updates
