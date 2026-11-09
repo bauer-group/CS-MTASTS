@@ -19,7 +19,7 @@
 
 
 # ── Stage 1: Builder — install Python dependencies into /install ───────────────
-FROM python:3.14-alpine AS builder
+FROM python:3.15-alpine AS builder
 
 # build-base + libffi-dev cover source builds for any dependency that lacks a
 # prebuilt cp314 musl wheel. Builder-only — these never reach the runtime image.
@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 
 # ── Stage 2: Test — pytest as a hard build gate ────────────────────────────────
-FROM python:3.14-alpine AS test
+FROM python:3.15-alpine AS test
 
 WORKDIR /app
 
@@ -57,7 +57,7 @@ RUN pytest tests/ -v --tb=short
 
 
 # ── Stage 3: Production — minimal runtime image ────────────────────────────────
-FROM python:3.14-alpine AS prod
+FROM python:3.15-alpine AS prod
 
 # ── Metadata ───────────────────────────────────────────────────────────────────
 LABEL vendor="BAUER GROUP"
