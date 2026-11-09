@@ -3,7 +3,7 @@
 # ═══════════════════════════════════════════════════════════════════════════════
 # Mail Transfer Agent Strict Transport Security Policy Server (RFC 8461)
 #
-# Multi-stage build on python:3.14-alpine with an integrated test gate:
+# Multi-stage build on python:3.15-alpine with an integrated test gate:
 #   - Stage 1 (builder): installs Python dependencies into an isolated prefix
 #   - Stage 2 (test):    runs pytest — the build FAILS if any test fails
 #   - Stage 3 (prod):    minimal runtime, non-root user, tini init, healthcheck
@@ -72,7 +72,7 @@ LABEL org.opencontainers.image.authors="Karl Bauer <karl.bauer@bauer-group.com>"
 LABEL org.opencontainers.image.source="https://github.com/bauer-group/CS-MTASTS"
 LABEL org.opencontainers.image.url="https://github.com/bauer-group/CS-MTASTS"
 LABEL org.opencontainers.image.documentation="https://github.com/bauer-group/CS-MTASTS#readme"
-LABEL org.opencontainers.image.base.name="docker.io/library/python:3.14-alpine"
+LABEL org.opencontainers.image.base.name="docker.io/library/python:3.15-alpine"
 LABEL org.opencontainers.image.version="0.4.11"
 
 LABEL com.bauer-group.image.component="application"
