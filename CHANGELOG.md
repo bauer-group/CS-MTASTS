@@ -4,6 +4,18 @@ All notable changes to this project are documented here. This file is maintained
 automatically by [semantic-release](https://github.com/semantic-release/semantic-release)
 on every release to `main`.
 
+## [0.4.12](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.11...v0.4.12) (2026-11-09)
+
+### 🐛 Bug Fixes
+
+* **docker)(deps:** bump python from 3.14-alpine to 3.15-alpine in /src ([#10](https://github.com/bauer-group/CS-MTASTS/issues/10)) ([333f6d3](https://github.com/bauer-group/CS-MTASTS/commit/333f6d39b0b429f7be2966e2955b5140892d0968))
+* **docker:** completed the move to python 3.15-alpine [skip ci] ([eb3711e](https://github.com/bauer-group/CS-MTASTS/commit/eb3711ef6c0abb0efd547a6aca5cba4e3836a9d8)), references [#10](https://github.com/bauer-group/CS-MTASTS/issues/10)
+
+### 🔧 Maintenance
+
+* **deps:** update base image python-alpine [skip ci] ([75b6312](https://github.com/bauer-group/CS-MTASTS/commit/75b6312674861f544a13e287fdeda7bca22188cd))
+* update Dockerfile version to 0.4.11 ([71d2388](https://github.com/bauer-group/CS-MTASTS/commit/71d238868cb1017dcfed23a8e3f71a6dda1241f2))
+
 ## [0.4.11](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.10...v0.4.11) (2026-11-06)
 
 ### 🔧 Maintenance
