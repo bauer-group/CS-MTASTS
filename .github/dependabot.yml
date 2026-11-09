@@ -27,9 +27,10 @@ updates:
 
   # Python application dependencies (Flask, gunicorn, Flask-Limiter) and the
   # test requirements (pytest, pytest-mock)
-  # Patch updates are auto-merged by docker-maintenance.yml once the PR build
-  # of docker-release.yml (it installs both requirements files and runs the
-  # pytest gate) has passed. Minor and major updates stay open for review.
+  # Patch and minor updates are auto-merged by docker-maintenance.yml once the
+  # PR build of docker-release.yml (it installs both requirements files and
+  # runs the pytest gate) has passed. Major updates (a 0.x minor counts as
+  # major) stay open for review.
   - package-ecosystem: "pip"
     directory: "/src"
     schedule:
