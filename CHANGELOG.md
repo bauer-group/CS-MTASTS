@@ -4,6 +4,17 @@ All notable changes to this project are documented here. This file is maintained
 automatically by [semantic-release](https://github.com/semantic-release/semantic-release)
 on every release to `main`.
 
+## [0.4.13](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.12...v0.4.13) (2026-11-23)
+
+### 🐛 Bug Fixes
+
+* **deps)(deps:** update pytest-mock requirement in /src ([f0c4f97](https://github.com/bauer-group/CS-MTASTS/commit/f0c4f973949168d29fe98cea2f856d78a60bfdb9))
+* **deps:** bump gunicorn from 26.0.0 to 27.0.1 in /src ([8995bd4](https://github.com/bauer-group/CS-MTASTS/commit/8995bd4cbe8feea8c6177f909b0680a021f9dc56))
+
+### 🔧 Maintenance
+
+* update Dockerfile version to 0.4.12 ([e37e361](https://github.com/bauer-group/CS-MTASTS/commit/e37e361b51babb19dd6b70fbd0975080f9739276))
+
 ## [0.4.12](https://github.com/bauer-group/CS-MTASTS/compare/v0.4.11...v0.4.12) (2026-11-09)
 
 ### 🐛 Bug Fixes
